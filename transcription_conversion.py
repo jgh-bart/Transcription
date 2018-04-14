@@ -1,6 +1,5 @@
 '''
-Conversion from ARPABET to X-SAMPA and vice versa,
-by dictionary retrieval
+Conversion from ARPABET to X-SAMPA and vice versa, and to IPA
 '''
 
 class phoneme:
