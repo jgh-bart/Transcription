@@ -94,7 +94,7 @@ def notation_to_notation(input_string, input_notation, output_notation):
                     output += eng_phoneme_set.get_arpa(phoneme).xsampa
                 elif input_notation == 'xsampa' and output_notation == 'arpa':
                     output += eng_phoneme_set.get_xsampa(phoneme).arpa
-                if input_notation == 'arpa' and output_notation == 'ipa':
+                elif input_notation == 'arpa' and output_notation == 'ipa':
                     output += eng_phoneme_set.get_arpa(phoneme).ipa
                 elif input_notation == 'xsampa' and output_notation == 'ipa':
                     output += eng_phoneme_set.get_xsampa(phoneme).ipa
