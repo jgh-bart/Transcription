@@ -121,7 +121,6 @@ print
 
 def print_all(phoneme_set):
     print 'ARPA  X-SAMPA   IPA'
-    print 'stops:'
     for symbol in ['p','b','t','d','k','g',                 # stops
                    'm','n','ng',                            # nasals
                    'f','v','th','dh','s','z','sh','zh','h', # fricatives
