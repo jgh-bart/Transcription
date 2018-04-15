@@ -110,7 +110,9 @@ def notation_to_notation(input_string, input_notation, output_notation):
         if (input_notation == 'arpa' and phoneme[-1] in ['1','2','0']) or (input_notation == 'xsampa' and phoneme[-1] in ['"','%','-']):
             # if vowel and stress marker concatenated, deal with vowel
             if len(phoneme) > 1:
-                output += phoneme_to_phoneme(phoneme[:-1], input_notation, output_notation) + ' '
+                output += phoneme_to_phoneme(phoneme[:-1], input_notation, output_notation)
+                if output_notation != 'ipa':
+                    output + ' '
             # stress marker position: shift to front of syllable for IPA
             stress_marker = phoneme_to_phoneme(phoneme[-1], input_notation, output_notation)
             idx = len(output)
