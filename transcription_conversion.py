@@ -13,7 +13,12 @@ class phoneme:
 
 class phoneme_set:
     def __init__(self, phoneme_list):
-        self.phonemes = set(phoneme_list)
+        self.phonemes = phoneme_list
+    
+    def print_set(self):
+        print 'ARPA  X-SAMPA   IPA'
+        for phoneme in self.phonemes:
+            phoneme.print_phoneme()
     
     def get_arpa(self, symbol):
         # return the phoneme with this ARPABET symbol
@@ -49,7 +54,7 @@ eng_phoneme_set = phoneme_set(
         # affricates
         phoneme('ch', 'tS', u't\u0283'),
         phoneme('jh', 'dZ', u'd\u0292'),
-        # single-character affricate symbols, if preferred
+        # single-character IPA affricate symbols, if preferred
         #phoneme('ch', 'tS', u'\u02A7'),
         #phoneme('jh', 'dZ', u'\u02A4'),
         # approximants
@@ -81,31 +86,40 @@ eng_phoneme_set = phoneme_set(
         phoneme('2', '%', u'\u02CC'),
         phoneme('0', '-', '')])
 
+def phoneme_to_phoneme(symbol, input_notation, output_notation):
+    # return the output symbol corresponding to the input symbol
+    from_input = {'arpa':   (lambda phoneme_set: phoneme_set.get_arpa(symbol)),
+                  'xsampa': (lambda phoneme_set: phoneme_set.get_xsampa(symbol)),
+                  'ipa':    (lambda phoneme_set: phoneme_set.get_ipa(symbol))}
+    to_output  = {'arpa':   (lambda phoneme: phoneme.arpa),
+                  'xsampa': (lambda phoneme: phoneme.xsampa),
+                  'ipa':    (lambda phoneme: phoneme.ipa.encode('utf-8'))}
+    return to_output[output_notation](from_input[input_notation](eng_phoneme_set))
+
 def notation_to_notation(input_string, input_notation, output_notation):
     output = ''
     for phoneme in input_string.split(' '):
-        # stress markers in IPA to front of syllable
-        if output_notation == 'ipa' and ((input_notation == 'arpa' and phoneme in ['1','2','0']) or (input_notation == 'xsampa' and phoneme in ['"','%','-'])):
-            idx = len(output) - 1
-            while idx > 0 and output[idx - 1] != '.':
-                idx -= 1
-            stress_marker = eng_phoneme_set.get_arpa(phoneme).ipa if input_notation == 'arpa' else eng_phoneme_set.get_xsampa(phoneme).ipa
+        # stress markers
+        if (input_notation == 'arpa' and phoneme[-1] in ['1','2','0']) or (input_notation == 'xsampa' and phoneme[-1] in ['"','%','-']):
+            # if vowel and stress marker concatenated, deal with vowel
+            if len(phoneme) > 1:
+                output += phoneme_to_phoneme(phoneme[:-1], input_notation, output_notation) + ' '
+            # stress marker position: shift to front of syllable for IPA
+            stress_marker = phoneme_to_phoneme(phoneme[-1], input_notation, output_notation)
+            idx = len(output)
+            if output_notation == 'ipa':
+                while idx > 0 and output[idx - 1] != '.':
+                    idx -= 1
             output = output[:idx] + stress_marker + output[idx:]
+        # all other characters: retrieve by phoneme_to_phoneme
         else:
             try:
-                if input_notation == 'arpa' and output_notation == 'xsampa':
-                    output += eng_phoneme_set.get_arpa(phoneme).xsampa
-                elif input_notation == 'xsampa' and output_notation == 'arpa':
-                    output += eng_phoneme_set.get_xsampa(phoneme).arpa
-                elif input_notation == 'arpa' and output_notation == 'ipa':
-                    output += eng_phoneme_set.get_arpa(phoneme).ipa
-                elif input_notation == 'xsampa' and output_notation == 'ipa':
-                    output += eng_phoneme_set.get_xsampa(phoneme).ipa
+                output += phoneme_to_phoneme(phoneme, input_notation, output_notation)
             except:
-                raise ValueError(phoneme + ': invalid input character')
+                raise ValueError(input_notation + ' ' + phoneme + ': not recognised')
         if output_notation in ['xsampa', 'arpa']:
             output += ' '
-    return output.encode('utf-8')
+    return output
 
 arpa_input = 'g uu 1 . g ax 0 l . b a 2 ng . ax 0'
 print 'ARPA:   ', arpa_input
@@ -119,15 +133,4 @@ print 'ARPA:   ', notation_to_notation(xsampa_input, 'xsampa', 'arpa')
 print 'IPA:    ', notation_to_notation(xsampa_input, 'xsampa', 'ipa')
 print
 
-def print_all(phoneme_set):
-    print 'ARPA  X-SAMPA   IPA'
-    for symbol in ['p','b','t','d','k','g',                 # stops
-                   'm','n','ng',                            # nasals
-                   'f','v','th','dh','s','z','sh','zh','h', # fricatives
-                   'ch','jh',                               # affricates
-                   'w','l','r','y',                         # approximants
-                   'a','aa','i','ii','uh','u','uu',
-                   'e','ax','aax','o','oo',                 # vowels
-                   'ai','oi','au','ou','iax','eax','uax',   # diphthongs
-                   '1','2','0']:                            # stress
-        phoneme_set.get_arpa(symbol).print_phoneme()
+eng_phoneme_set.print_set()
