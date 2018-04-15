@@ -7,21 +7,24 @@ class phoneme:
         self.arpa   = arpa
         self.xsampa = xsampa
         self.ipa    = ipa
+    
+    def print_phoneme(self):
+        print self.arpa.ljust(7), self.xsampa.ljust(7), self.ipa.encode('utf-8')
 
 class phoneme_set:
     def __init__(self, phoneme_list):
-        self.phoneme_set = set(phoneme_list)
+        self.phonemes = set(phoneme_list)
     
     def get_arpa(self, symbol):
         # return the phoneme with this ARPABET symbol
-        for phoneme in self.phoneme_set:
+        for phoneme in self.phonemes:
             if phoneme.arpa == symbol:
                 return phoneme
         raise ValueError('ARPABET ' + symbol + ' not in phoneme set')
     
     def get_xsampa(self, symbol):
         # return the phoneme with this X-SAMPA symbol
-        for phoneme in self.phoneme_set:
+        for phoneme in self.phonemes:
             if phoneme.xsampa == symbol:
                 return phoneme
         raise ValueError('X-SAMPA ' + symbol + ' not in phoneme set')
@@ -114,3 +117,18 @@ xsampa_input = 'g u: " . g @ - l . b { % N . @ -'
 print 'X-SAMPA:', xsampa_input
 print 'ARPA:   ', notation_to_notation(xsampa_input, 'xsampa', 'arpa')
 print 'IPA:    ', notation_to_notation(xsampa_input, 'xsampa', 'ipa')
+print
+
+def print_all(phoneme_set):
+    print 'ARPA  X-SAMPA   IPA'
+    print 'stops:'
+    for symbol in ['p','b','t','d','k','g',                 # stops
+                   'm','n','ng',                            # nasals
+                   'f','v','th','dh','s','z','sh','zh','h', # fricatives
+                   'ch','jh',                               # affricates
+                   'w','l','r','y',                         # approximants
+                   'a','aa','i','ii','uh','u','uu',
+                   'e','ax','aax','o','oo',                 # vowels
+                   'ai','oi','au','ou','iax','eax','uax',   # diphthongs
+                   '1','2','0']:                            # stress
+        phoneme_set.get_arpa(symbol).print_phoneme()
