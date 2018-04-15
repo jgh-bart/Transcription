@@ -33,6 +33,13 @@ class phoneme_set:
             if phoneme.xsampa == symbol:
                 return phoneme
         raise ValueError('X-SAMPA ' + symbol + ' not in phoneme set')
+    
+    def get_ipa(self, symbol):
+        # return the phoneme with this IPA symbol
+        for phoneme in self.phonemes:
+            if phoneme.ipa == symbol:
+                return phoneme
+        raise ValueError('IPA ' + symbol + ' not in phoneme set')
 
 unchanged_phonemes = [
         'p','b','t','d','k','g',  # stops
