@@ -1,5 +1,6 @@
 '''
 Conversion from ARPABET to X-SAMPA and vice versa, and to IPA
+JGHB
 '''
 
 class phoneme:
@@ -69,7 +70,7 @@ eng_phoneme_set = phoneme_set(
         phoneme('y', 'j', 'j'),
         # vowels
         phoneme('a', '{', u'\u00E6'),
-        phoneme('aa', 'A', u'\u0251:'),
+        phoneme('aa', 'A:', u'\u0251:'),
         phoneme('i', 'I', u'\u026A'),
         phoneme('ii', 'i:', 'i:'),
         phoneme('uh', 'V', u'\u028C'),
@@ -79,7 +80,7 @@ eng_phoneme_set = phoneme_set(
         phoneme('ax', '@', u'\u0259'),
         phoneme('aax', '3:', u'\u025C:'),
         phoneme('o', 'Q', u'\u0252'),
-        phoneme('oo', 'O', u'\u0254:'),
+        phoneme('oo', 'O:', u'\u0254:'),
         # diphthongs
         phoneme('ai', 'aI', u'a\u026A'),
         phoneme('oi', 'OI', u'\u0254\u026A'),
@@ -130,13 +131,13 @@ def notation_to_notation(input_string, input_notation, output_notation):
             output += ' '
     return output
 
-arpa_input = 'g uu 1 . g ax 0 l . b a 2 ng . ax 0'
+arpa_input = 'aax 1 . dh ax 0 n . w eax 2'
 print 'ARPA:   ', arpa_input
 print 'X-SAMPA:', notation_to_notation(arpa_input, 'arpa', 'xsampa')
 print 'IPA:    ', notation_to_notation(arpa_input, 'arpa', 'ipa')
 print
 
-xsampa_input = 'g u: " . g @ - l . b { % N . @ -'
+xsampa_input = '3: " . D @ - n . w E@ %'
 print 'X-SAMPA:', xsampa_input
 print 'ARPA:   ', notation_to_notation(xsampa_input, 'xsampa', 'arpa')
 print 'IPA:    ', notation_to_notation(xsampa_input, 'xsampa', 'ipa')
